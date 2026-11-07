@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jamia-v1794054557';
+const CACHE_NAME = 'jamia-v1794054745';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
