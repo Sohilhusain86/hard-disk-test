@@ -1886,7 +1886,7 @@
         const res = await fetch(DRIVE_API_URL);
         const dynamicBooks = await res.json();
         try {
-          const nRes = await fetch(NAATS_API_URL + "?t=" + Date.now());
+          const nRes = await fetch(NAATS_API_URL + "?t=" + Date.now(), {cache: "no-store"}));
           const naats = await nRes.json();
           if (Array.isArray(naats)) {
             naats.forEach(nt => {
@@ -2355,7 +2355,7 @@ function toggleFilterRows() {
   async function fetchNaatsFromDrive() {
     if (window.JAMIA_NAATS_LIST.length > 0) return window.JAMIA_NAATS_LIST;
     try {
-      const res = await fetch(NAATS_API_URL + "?t=" + Date.now());
+      const res = await fetch(NAATS_API_URL + "?t=" + Date.now(), {cache: "no-store"}));
       const data = await res.json();
       if (Array.isArray(data)) {
         window.JAMIA_NAATS_LIST = data.map(nt => {
