@@ -3365,5 +3365,54 @@ function toggleFilterRows() {
 </script>
 <!-- END_5S_INSTALL_POPUP -->
 
+
+<script>
+(function() {
+  // Hide floating red dots whenever login screen is visible
+  function syncRedDotVisibility() {
+    var loginInputs = document.querySelectorAll('input[type="password"]');
+    var isLoginVisible = false;
+    loginInputs.forEach(function(inp) {
+      if (inp.offsetParent !== null) isLoginVisible = true;
+    });
+    var dots = document.querySelectorAll('.red-dot, .notification-dot, #redDot, #notifDot, [class*="dot"]');
+    dots.forEach(function(dot) {
+      if (isLoginVisible) {
+        dot.dataset.hiddenByLogin = "true";
+        dot.style.display = "none";
+      } else if (dot.dataset.hiddenByLogin === "true") {
+        dot.style.display = "";
+        delete dot.dataset.hiddenByLogin;
+      }
+    });
+  }
+  setInterval(syncRedDotVisibility, 300);
+  window.addEventListener("DOMContentLoaded", syncRedDotVisibility);
+
+  // Open dedicated loop player when 'سنیں' button is clicked
+  document.addEventListener("click", function(e) {
+    var btn = e.target.closest("a, button, [onclick]");
+    if (!btn) return;
+    var text = (btn.innerText || btn.textContent || "").trim();
+    if (text.indexOf("سنیں") !== -1) {
+      var audioUrl = btn.getAttribute("data-audio") || btn.getAttribute("data-src") || btn.getAttribute(" data-url") || btn.getAttribute("href");
+      if (!audioUrl || audioUrl === "#" || audioUrl.indexOf("javascript:") === 0) {
+        var onclickStr = btn.getAttribute("onclick") || "";
+        var match = onclickStr.match(/['"](https?:\/\/[^'"]+)['"]/);
+        if (match) audioUrl = match[1];
+      }
+      if (audioUrl && audioUrl.indexOf("http") === 0) {
+        e.preventDefault();
+        e.stopPropagation();
+        var card = btn.closest(".card, .item, .book-card, li, tr, div");
+        var titleEl = card ? card.querySelector("h1, h2, h3, h4, .title, strong, b") : null;
+        var title = titleEl ? titleEl.innerText.trim() : "نعت شریف";
+        window.location.href = "player.html?url=" + encodeURIComponent(audioUrl) + "&title=" + encodeURIComponent(title);
+      }
+    }
+  }, true);
+})();
+</script>
+
 </body>
 </html>

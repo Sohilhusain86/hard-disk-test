@@ -1,3 +1,6 @@
 .vercel
 .env*
 send_push_instant.py
+auto_push_loop.py
+send_quote.py
+*.log
