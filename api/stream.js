@@ -26,9 +26,7 @@ export default async function handler(req, res) {
     let response = await fetch(targetUrl, { headers, redirect: 'follow' });
     const contentType = response.headers.get('content-type') || '';
 
-    // Bypass Google Drive large file confirmation page if triggered
     if (contentType.includes('text/html')) {
-      const html = await response.text();
       const matchId = (targetUrl.match(/id=([-\w]{25,})/) || [])[1];
       if (matchId) {
         const directUrl = `https://drive.usercontent.google.com/download?id=${matchId}&export=download&confirm=t`;
