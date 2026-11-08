@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مخصوص آڈیو پلیئر - مکتبہ جامعہ</title>
+  <style>
+    body { background: #0f172a; color: #f8fafc; font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+    .player-card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 20px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; }
+    h2 { color: #38bdf8; font-size: 18px; margin-bottom: 15px; }
+    audio { width: 100%; margin: 15px 0; accent-color: #10b981; }
+    .controls { display: flex; justify-content: center; gap: 10px; margin: 15px 0; flex-wrap: wrap; }
+    button { background: #0284c7; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+    button.active { background: #10b981; }
+    .timer-box { background: #0f172a; padding: 10px; border-radius: 8px; margin-top: 15px; font-size: 13px; color: #f59e0b; }
+  </style>
+</head>
+<body>
+
+<div class="player-card">
+  <h2>🎧 فل سکرین آڈیو پلیئر & لوپر</h2>
+  <p id="nowPlaying" style="font-size: 14px; color: #94a3b8; margin-bottom: 10px;">کوئی نعت منتخب نہیں کی گئی</p>
+  
+  <audio id="fullscreenAudio" controls></audio>
+
+  <div class="controls">
+    <button id="loopBtn" onclick="toggleLoop()">🔁 لوپ (Loop)</button>
+    <button onclick="setSleepTimer(15)">⏱️ 15 منٹ</button>
+    <button onclick="setSleepTimer(30)">⏱️ 30 منٹ</button>
+    <button onclick="clearSleepTimer()">❌ ٹائمر بند</button>
+  </div>
+
+  <div class="timer-box" id="timerStatus">سلپ ٹائمر: بند ہے</div>
+</div>
+
+<script>
+  const audio = document.getElementById('fullscreenAudio');
+  const loopBtn = document.getElementById('loopBtn');
+  const timerStatus = document.getElementById('timerStatus');
+  let sleepInterval = null;
+
+  // URL se audio link aur title uthana
+  const params = new URLSearchParams(window.location.search);
+  const audioUrl = params.get('url');
+  const audioTitle = params.get('title');
+
+  if (audioUrl) {
+    audio.src = audioUrl;
+    document.getElementById('nowPlaying').textContent = decodeURIComponent(audioTitle || 'نعت شریف');
+    audio.play().catch(() => {});
+  }
+
+  function toggleLoop() {
+    audio.loop = !audio.loop;
+    if (audio.loop) {
+      loopBtn.classList.add('active');
+      loopBtn.textContent = '🔁 لوپ: چالو (ON)';
+    } else {
+      loopBtn.classList.remove('active');
+      loopBtn.textContent = '🔁 لوپ: بند (OFF)';
+    }
+  }
+
+  function setSleepTimer(minutes) {
+    clearSleepTimer();
+    let timeLeft = minutes * 60;
+    timerStatus.textContent = `سلپ ٹائمر: ${minutes} منٹ باقی`;
+    
+    sleepInterval = setInterval(() => {
+      timeLeft--;
+      let m = Math.floor(timeLeft / 60);
+      let s = timeLeft % 60;
+      timerStatus.textContent = `سلپ ٹائمر: ${m}m ${s}s باقی`;
+
+      if (timeLeft <= 0) {
+        audio.pause();
+        clearSleepTimer();
+        timerStatus.textContent = `سلپ ٹائمر کی وجہ سے آڈیو بند ہو گئی`;
+      }
+    }, 1000);
+  }
+
+  function clearSleepTimer() {
+    if (sleepInterval) clearInterval(sleepInterval);
+    sleepInterval = null;
+    timerStatus.textContent = 'سلپ ٹائمر: بند है';
+  }
+</script>
+
+</body>
+</html>
