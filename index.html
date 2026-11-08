@@ -3414,5 +3414,15 @@ function toggleFilterRows() {
 })();
 </script>
 
+
+<script>
+window.addEventListener("load", function() {
+  window.playAudio = function(audioUrl, title) {
+    if (!audioUrl) return;
+    window.location.href = "player.html?url=" + encodeURIComponent(audioUrl) + "&title=" + encodeURIComponent(title || "نعت شریف");
+  };
+});
+</script>
+
 </body>
 </html>
